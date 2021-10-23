@@ -95,14 +95,6 @@ def train_model(model, train_dataloader, val_dataloader=None, epochs=5):
             print("Early stopping")
             break
 
-        # # save model
-        # if (
-        #     len(training_stats) == 0
-        #     or training_stats[-1]["Valid. Loss"] > avg_train_loss
-        # ):
-        #     model_dir = config.save_model_path
-        #     torch.save(model.state_dict(), model_dir)
-
         training_stats.append(
             {
                 "epoch": epoch_i + 1,
