@@ -1,31 +1,41 @@
 import time
-import random
-import numpy as np
 import torch
-from utils.helper_functions import format_time
+import json
+import numpy as np
+from datetime import date
 from transformers import AdamW, get_linear_schedule_with_warmup
-from resources.build_model import nerModel
-from utils.pytorchtools import EarlyStopping
 from sklearn.metrics import classification_report
-from config import config
+from resources.build_model import nerModel
+from utils.helper_functions import format_time
+from utils.pytorchtools import EarlyStopping
 
 
-def train_model(model, train_dataloader, val_dataloader=None, epochs=5):
+def train_model(args, model, train_dataloader, val_dataloader=None):
     """Train and validate the NER BERT model."""
     training_stats = []
     train_loss_set = []
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
+
+    name = (
+        args.savedir
+        + str(args.epochs)
+        + "_epochs_"
+        + str(date.today().strftime("%d_%m_%Y"))
+    )
+    save_model_path = name + "_model.pt"
+    save_results_path = name + "_results.json"
+
     early_stopping = EarlyStopping(
-        patience=2, verbose=True, path=config.save_model_path
+        patience=args.patience, verbose=True, path=save_model_path
     )
     optimizer, scheduler = build_optimizer_scheduler(
-        model=model, epochs=epochs, train_dataloader=train_dataloader
+        model=model, epochs=args.epochs, train_dataloader=train_dataloader
     )
 
     print("Start training...\n")
-    for epoch_i in range(epochs):
+    for epoch_i in range(args.epochs):
         # =======================================
         #               Training
         # =======================================
@@ -106,6 +116,9 @@ def train_model(model, train_dataloader, val_dataloader=None, epochs=5):
             }
         )
 
+        with open(save_results_path, "w") as f:
+            json.dump(training_stats, f)
+
     print("\n")
     print("Training complete!")
     print("Time taken to complete training: {}".format(time.time() - t0))
@@ -150,15 +163,23 @@ def evaluate(model, val_dataloader):
     return avg_val_loss, avg_val_accuracy, validation_time
 
 
-def test_model(test_dataloader, num_tags, label_map):
+def test_model(args, test_dataloader, num_tags, label_map):
     """[Here we will test the final model by generating a classification report of the model against the test data]
 
     Args:
         test_dataloader ([pytorch dataloader]): [this will contain the appropriate test data for the NER model]
         num_tags ([int]): [number of NER labels in the dataset]
     """
-    model = nerModel(num_tags, config.BERT_MODEL_NAME)
-    model.load_state_dict(torch.load(config.save_model_path))
+
+    save_model_path = (
+        args.savedir
+        + str(args.epochs)
+        + "_epochs_"
+        + str(date.today().strftime("%d_%m_%Y"))
+        + "_model.pt"
+    )
+    model = nerModel(num_tags, args.model_name)
+    model.load_state_dict(torch.load(save_model_path))
     # Put model in evaluation mode
     model.eval()
 

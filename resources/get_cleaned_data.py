@@ -1,9 +1,5 @@
-import pandas as pd
-import numpy as np
-import joblib
-from sklearn import preprocessing
-from config import config
 import csv
+import json
 
 
 def get_cleaned_data(data_path):
@@ -43,4 +39,8 @@ def get_cleaned_data(data_path):
                     label_id += 1
     # add IGNORE label for [CLS], [SEP], [PAD] and subtokens
     label_map["IGNORE"] = label_id
+
+    with open("saved_models/label_map.json", "w") as f:
+        json.dump(label_map, f)
+
     return sentences, labels, label_map
