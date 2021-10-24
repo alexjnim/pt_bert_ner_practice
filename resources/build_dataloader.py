@@ -1,9 +1,6 @@
-import os
-import pandas as pd
 import torch
 from itertools import chain
 from torch.utils.data import Dataset, DataLoader
-from transformers import BertTokenizerFast as BertTokenizer
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
 

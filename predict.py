@@ -4,7 +4,6 @@ import torch
 from resources.build_model import nerModel
 from resources.build_dataloader import _dataset
 from transformers import BertTokenizerFast as BertTokenizer
-from config import config
 
 
 def predict(args, sentence):
