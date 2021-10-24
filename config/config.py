@@ -11,7 +11,7 @@ BERT_MODEL_NAME = "bert-base-uncased"
 
 epochs = 2
 
-model_path = "saved_model/"
+model_path = "saved_models/"
 model_name = "ner_model_" + str(epochs) + "_epochs_" + str(date) + ".pt"
 save_model_path = model_path + model_name
 save_label_encoders_path = model_path + "label_encoders_" + str(date) + ".bin"

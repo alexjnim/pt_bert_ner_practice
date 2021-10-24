@@ -71,7 +71,7 @@ trained_model, training_stats, train_loss_set = train_model(
     model,
     train_dataloader,
     val_dataloader=val_dataloader,
-    epochs=3,
+    epochs=10,
 )
 
 
