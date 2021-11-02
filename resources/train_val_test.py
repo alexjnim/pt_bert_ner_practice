@@ -56,6 +56,7 @@ def train_model(args, model, train_dataloader, val_dataloader=None):
             b_true_labels = batch["labels"].to(device)
 
             model.zero_grad()
+            optimizer.zero_grad()
 
             _, loss = model(b_input_ids, b_attention_mask, b_true_labels)
             batch_loss += loss.item()
