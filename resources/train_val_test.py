@@ -60,6 +60,7 @@ def train_model(args, model, train_dataloader, val_dataloader=None):
             total_loss += loss.item()
             train_loss_set.append(loss.item())
             
+            #backpropagation
             optimizer.zero_grad()
             loss.backward()
 
