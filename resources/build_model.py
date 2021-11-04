@@ -59,12 +59,12 @@ class nerModel(nn.Module):
 
     def forward(self, input_ids, attention_mask, true_labels=None):
         embeddings, _ = self.bert(input_ids, attention_mask=attention_mask)
-        tags = self.classify_tags(embeddings)
+        logits = self.classify_tags(embeddings)
 
         if true_labels is None:
             # this is for prediction when we don't have the real labels
-            return tags
+            return logits
         else:
             # if we have the real labels, we can get the loss (for train, val and test data)
-            loss = loss_fn(tags, true_labels, attention_mask, self.num_tags)
+            loss = loss_fn(logits, true_labels, attention_mask, self.num_tags)
             return tags, loss
