@@ -54,15 +54,13 @@ def train_model(args, model, train_dataloader, val_dataloader=None):
             b_input_ids = batch["input_ids"].to(device)
             b_attention_mask = batch["attention_mask"].to(device)
             b_true_labels = batch["labels"].to(device)
-
-            model.zero_grad()
-            optimizer.zero_grad()
-
+          
             _, loss = model(b_input_ids, b_attention_mask, b_true_labels)
             batch_loss += loss.item()
             total_loss += loss.item()
             train_loss_set.append(loss.item())
-
+            
+            optimizer.zero_grad()
             loss.backward()
 
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
