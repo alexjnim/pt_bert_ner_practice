@@ -48,10 +48,10 @@ def predict(args, sentence):
         input_ids = torch.reshape(input_ids, (1, -1))
         attention_mask = torch.reshape(attention_mask, (1, -1))
 
-        tags = model(input_ids, attention_mask)
+        logits = model(input_ids, attention_mask)
         print([tokenizer.decode(i) for i in input_ids[0][1 : len(sentence) + 1]])
 
-        result_tags = tags.argmax(2).cpu().numpy().reshape(-1)[1 : len(sentence) + 1]
+        result_tags = logits.argmax(2).cpu().numpy().reshape(-1)[1 : len(sentence) + 1]
         print([inv_map[t] for t in result_tags])
 
 
